@@ -15,7 +15,7 @@ export default function handler(req, res) {
       }
   const message = {
     type: "text",
-    text: "hello world",
+    text: "send from web api",
   };
 
   Promise.all(
