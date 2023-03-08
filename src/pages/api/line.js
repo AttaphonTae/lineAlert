@@ -13,12 +13,13 @@ export default async function handler(req, res) {
         text: 'Hello, world!',
       };
     try {
-        const botInfo = await client.getBotInfo();
-        const botId = botInfo.userId;
-        const userIds = await client.getGroupMemberIds(botId);
-        await client.multicast(userIds, message);
-        console.log('Message sent successfully to all users!');
-        res.status(200).end();
+        client.pushMessage('U9649af9ebe7140171f0892f0efa4fe85', message)
+        .then(() => {
+            console.log('Push message sent successfully!');
+        })
+        .catch((err) => {
+            console.error(err);
+        });
       } catch (err) {
         console.error(err);
         res.status(500).end();
