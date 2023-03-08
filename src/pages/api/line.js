@@ -6,32 +6,21 @@ const client = new Client({
   channelSecret: process.env.LINE_CHANNEL_SECRET,
 });
 
-export default function handler(req, res) {
-    const events = req.body.events;
-    if (!events || events.length === 0) {
-        // No events to handle
+export default async function handler(req, res) {
+
+    const message = {
+        type: 'text',
+        text: 'Hello, world!',
+      };
+    try {
+        const botInfo = await client.getBotInfo();
+        const botId = botInfo.userId;
+        const userIds = await client.getGroupMemberIds(botId);
+        await client.multicast(userIds, message);
+        console.log('Message sent successfully to all users!');
         res.status(200).end();
-        return;
+      } catch (err) {
+        console.error(err);
+        res.status(500).end();
       }
-  const message = {
-    type: "text",
-    text: "send from web api",
-  };
-
-  Promise.all(
-    events.map((event) => {
-      return client.replyMessage(event.replyToken, message);
-    })
-  )
-    .then(() => {
-      res.status(200).end();
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).end();
-    });
-
-  // Handle LINE events here
-
-  res.status(200).end();
 }
